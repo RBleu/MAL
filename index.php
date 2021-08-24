@@ -15,7 +15,7 @@ try
                 }
                 else
                 {
-                    throw new Exception('anime not found (ID not valid)');
+                    throw new Exception('Anime not found (ID not valid)');
                 }
                 break;
             case 'login':
@@ -38,6 +38,15 @@ try
                     require('view/signupView.php');
                 }
                 break;
+            case 'profile':
+                if(isset($_GET['username']) && $_GET['username'] != '')
+                {
+                    displayProfile($_GET['username']);
+                }
+                else
+                {
+                    throw new Exception('Profile not found');
+                }
         }
     }
     else

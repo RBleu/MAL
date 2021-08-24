@@ -1,6 +1,14 @@
 <?php
 
 require_once('model/AnimeManager.php');
+require_once('model/UserManager.php');
+
+function print_a($arr)
+{
+    echo '<pre>';
+    print_r($arr);
+    echo '</pre>';
+}
 
 function displayAnime($id)
 {
@@ -20,4 +28,13 @@ function displayAnime($id)
     $reviews = $animeManager->getAnimeReviews($id);
 
     require('view/animeView.php');
+}
+
+function displayProfile($username)
+{
+    $userManager = new UserManager();
+
+    $stats = $userManager->getProfileStats(1);
+
+    print_a($stats);
 }

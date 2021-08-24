@@ -4,16 +4,23 @@ require_once('model/Manager.php');
 
 class AnimeManager extends Manager
 {
-    function getAnimeById($id)
+    public function getAnimeById($id)
     {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT title, cover, type, episodes, status, aired, premiered, duration, score, scored_by, rank, members, synopsis FROM animes, types WHERE type_id = types.id AND animes.id = :id');
         $req->execute([':id' => $id]);
 
-        return $req->fetch(PDO::FETCH_ASSOC);
+        $anime = $req->fetch(PDO::FETCH_ASSOC);
+
+        if(!$anime)
+        {
+            throw new Exception('Anime not found');
+        }
+
+        return $anime;
     }
 
-    function getAnimeGenres($id)
+    public function getAnimeGenres($id)
     {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT genre FROM genres, animes_genres WHERE genre_id = genres.id AND anime_id = :id');
@@ -22,7 +29,7 @@ class AnimeManager extends Manager
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function getAnimeRelations($id)
+    public function getAnimeRelations($id)
     {
         $db = $this->dbConnect();
 
@@ -48,7 +55,7 @@ class AnimeManager extends Manager
         ];
     }
 
-    function getAnimeThemes($id)
+    public function getAnimeThemes($id)
     {
         $db = $this->dbConnect();
 
@@ -74,7 +81,7 @@ class AnimeManager extends Manager
         ];
     }
 
-    function getAnimeReviews($id)
+    public function getAnimeReviews($id)
     {
         $db = $this->dbConnect();
         $req = $db->prepare('SELECT username, review, likes FROM reviews, users WHERE anime_id = :id AND user_id = users.id ORDER BY likes DESC LIMIT 3');

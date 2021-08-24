@@ -107,12 +107,12 @@ ob_start();
                                 $link = function($val) { return '<a href=\'index.php?a=anime&id='.$val['id'].'\' class=\'link\'>'.$val['title'].'</a>'; };
                                 if(count($prequels) != 0)
                                 {
-                                    echo '<div>Prequel: '.implode(',', array_map($link, $prequels)).'</div>';
+                                    echo '<div>Prequel: '.implode(', ', array_map($link, $prequels)).'</div>';
                                 }
 
                                 if(count($sequels) != 0)
                                 {
-                                    echo '<div>Sequel: '.implode(',', array_map($link, $sequels)).'</div>';
+                                    echo '<div>Sequel: '.implode(', ', array_map($link, $sequels)).'</div>';
                                 }
                             ?>
                         </div>
