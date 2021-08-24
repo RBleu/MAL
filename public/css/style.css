@@ -11,6 +11,8 @@
     --red: #b25959;
     --light-red: #fae3e3;
     --dark-gray: #444;
+    --light-gray: #f6f6f6;
+    --gray: #ebebeb;
 
     --filter-blue: invert(27%) sepia(15%) saturate(5926%) hue-rotate(202deg) brightness(94%) contrast(88%);
     --filter-light-blue: invert(72%) sepia(6%) saturate(3956%) hue-rotate(191deg) brightness(93%) contrast(86%);

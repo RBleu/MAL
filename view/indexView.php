@@ -13,6 +13,6 @@ else
     $headerTitle = 'Welcome to MAL';
 }
 
-$content = '';
+$content = '<a href="index.php?a=anime&id=11617">Anime</a>';
 
 require('view/template.php');
