@@ -1,8 +1,6 @@
 <?php
 
-//require('controller/controller.php');
-
-$is_connected = false;
+require('controller/controller.php');
 
 try
 {
@@ -10,6 +8,16 @@ try
     {
         switch($_GET['a'])
         {
+            case 'anime':
+                if(isset($_GET['id']) && is_numeric($_GET['id']) && $_GET['id'] > 0)
+                {
+                    displayAnime($_GET['id']);
+                }
+                else
+                {
+                    throw new Exception('anime not found (ID not valid)');
+                }
+                break;
             case 'login':
                 if(false)
                 {

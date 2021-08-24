@@ -2,10 +2,11 @@
 
 $pageTitle = 'MAL - Panel';
 
-if($is_connected)
+if(false)
 {
     $headerTitle = 'My Panel';
-    $headerLink = '<img src=\'public/images/icons/cog.svg\' alt=\'cog-icon\'>Panel Settings';
+    $headerLinkIcon = 'cog';
+    $headerLinkText = 'Panel Settings';
 }
 else
 {

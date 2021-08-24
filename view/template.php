@@ -31,7 +31,7 @@
             </div>
             <div id="header-menu">
                 <?php
-                    if($is_connected)
+                    if(false)
                     {
                         ?>
                             <div class="header-icon">
@@ -116,10 +116,10 @@
             <div id="content-header">
                 <div id="content-header-title"><?= $headerTitle ?></div>
                 <?php
-                    if(isset($headerLink))
+                    if(isset($headerLinkIcon) && isset($headerLinkText))
                     {
                         ?>
-                            <a href="#" class="link"><?= $headerLink ?></a>
+                            <a href="#" class="link"><img src="public/images/icons/<?= $headerLinkIcon ?>.svg" alt="<?= $headerLinkIcon ?>-icon"><?= $headerLinkText ?></a>
                         <?php
                     }
                 ?>
