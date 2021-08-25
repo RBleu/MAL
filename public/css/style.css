@@ -76,6 +76,39 @@ input[type='submit']
     border: 2px solid var(--blue);
 }
 
+.info
+{
+    margin-top: 15px;
+}
+
+.info .title
+{
+    display: flex;
+    font-size: 15px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--light-blue);
+}
+
+.info .title .link
+{
+    margin-left: auto;
+    font-weight: 400;
+}
+
+.info .info-content
+{
+    font-size: 14px;
+}
+
+.info .info-content a
+{
+    display: unset;
+}
+
+.info .info-content > div
+{
+    margin-top: 10px;
+}
 
 /*    Main Page    */
 

@@ -10,6 +10,11 @@ function print_a($arr)
     echo '</pre>';
 }
 
+function formatDate($format, $date)
+{
+    return date($format, strtotime($date));
+}
+
 function displayAnime($id)
 {
     $animeManager = new AnimeManager();
@@ -34,7 +39,11 @@ function displayProfile($username)
 {
     $userManager = new UserManager();
 
-    $stats = $userManager->getProfileStats(1);
+    $profile = $userManager->getProfileByUsername($username);
+    $stats = $userManager->getProfileStats($profile['id']);
+    $totalAnimes = array_sum($stats);
+    $history = $userManager->getProfileHistory($profile['id']);
+    $totalEpisodes = $userManager->getProfileTotalEpisodes($profile['id']);
 
-    print_a($stats);
+    require('view/profileView.php');
 }

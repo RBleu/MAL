@@ -31,4 +31,22 @@ class UserManager extends Manager
 
         return $stats;
     }
+
+    public function getProfileHistory($id)
+    {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT animes.id, title, episodes, cover, progress_episodes, users_lists.score, modification_date, list FROM animes, users_lists, lists WHERE user_id = :id AND anime_id = animes.id AND list_id = lists.id ORDER BY modification_date DESC LIMIT 3');
+        $req->execute([':id' => $id]);
+
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getProfileTotalEpisodes($id)
+    {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT SUM(episodes) AS total_episodes FROM animes, users_lists WHERE user_id = :id AND animes.id = anime_id');
+        $req->execute([':id' => $id]);
+
+        return $req->fetch(PDO::FETCH_ASSOC)['total_episodes'];
+    }
 }

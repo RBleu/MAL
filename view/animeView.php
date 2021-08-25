@@ -94,7 +94,7 @@ ob_start();
         </div>
         <div class="info">
             <div class="title">Synopsis<a href="#" class="link">Edit</a></div>
-            <div class="info-content"><div><?= $anime['synopsis'] ?><div></div>
+            <div class="info-content"><div><?= $anime['synopsis'] ?></div></div>
         </div>
         <?php
             if($prequels || $sequels)
