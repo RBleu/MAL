@@ -20,7 +20,7 @@
 
     <!--    Scripts    -->
     <script src="public/js/jquery-3.6.0.min.js"></script>
-
+    <script src="public/js/script.js"></script>
 
 </head>
 <body>
@@ -31,7 +31,7 @@
             </div>
             <div id="header-menu">
                 <?php
-                    if(false)
+                    if($isConnected)
                     {
                         ?>
                             <div class="header-icon">
@@ -51,9 +51,9 @@
                             </div>
                             <div id="profile">
                                 <div id="profile-menu">
-                                    <a href="#" id="username">Razalael</a>
+                                    <a href="#" id="username"><?= $_COOKIE['username'] ?></a>
                                     <div class="header-sub-menu">
-                                        <div class="header-sub-menu-item"><a href="#">Profile</a></div>
+                                        <div class="header-sub-menu-item"><a href="index.php?a=profile&username=<?= $_COOKIE['username'] ?>">Profile</a></div>
                                         <div class="header-sub-menu-item"><a href="#">Friends</a></div>
                                         <div class="header-sub-menu-item"><a href="#">Clubs</a></div>
                                         <div class="header-sub-menu-item"><a href="#">Blog Posts</a></div>
@@ -61,10 +61,10 @@
                                         <div class="header-sub-menu-item"><a href="#">Recommendations</a></div>
                                         <div class="header-sub-menu-item"><a href="#"><img src="public/images/icons/book.svg" alt="book-icon">Bookshelf</a></div>
                                         <div class="header-sub-menu-item"><a href="#"><img src="public/images/icons/cog.svg" alt="cog-icon">Account Settings</a></div>
-                                        <div class="header-sub-menu-item"><a href="#"><img src="public/images/icons/logout.svg" alt="logout-icon">Logout</a></div>
+                                        <div class="header-sub-menu-item"><a href="index.php?a=logout"><img src="public/images/icons/logout.svg" alt="logout-icon">Logout</a></div>
                                     </div>
                                 </div>
-                                <a href="#" id="profile-img"><img src="public/images/profile_images/profile.png" alt="profile-image"></a>
+                                <a href="index.php?a=profile&username=<?= $_COOKIE['username'] ?>" id="profile-img"><img src="public/images/profile_images/profile.png" alt="profile-image"></a>
                             </div>
                         <?php
                     }

@@ -2,6 +2,8 @@
 
 require('controller/controller.php');
 
+checkCookies();
+
 try
 {
     if(isset($_GET['a']))
@@ -19,14 +21,23 @@ try
                 }
                 break;
             case 'login':
-                if(false)
+                if(isset($_POST['username']) && $_POST['username'] != '' && isset($_POST['password']) && $_POST['password'] != '')
                 {
-
+                    loginUser($_POST['username'], $_POST['password']);
                 }
                 else
                 {
                     require('view/loginView.php');
                 }
+                break;
+            case 'logout':
+                setcookie('username');
+                unset($_COOKIE['username']);
+
+                setcookie('password');
+                unset($_COOKIE['password']);
+
+                header('Location: ./');
                 break;
             case 'signup':
                 if(false)
@@ -47,6 +58,13 @@ try
                 {
                     throw new Exception('Profile not found');
                 }
+                break;
+            case 'search':
+                if(isset($_GET['q']))
+                {
+                    searchAnime($_GET['q']);
+                }
+                break;
         }
     }
     else

@@ -4,6 +4,38 @@ require_once('model/Manager.php');
 
 class UserManager extends Manager
 {
+    public function exists($username)
+    {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM users WHERE username = :username');
+        $req->execute([':username' => $username]);
+
+        return (bool) $req->fetch();
+    }
+
+    public function checkPassword($username, $password)
+    {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT password FROM users WHERE username = :username');
+        $req->execute([':username' => $username]);
+
+        $hash = $req->fetch(PDO::FETCH_ASSOC)['password'];
+
+        return (password_verify($password, $hash))? $hash : false;
+    }
+
+    public function checkPasswordHash($username, $password)
+    {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT * FROM users WHERE username = :username AND password = :password');
+        $req->bindValue(':username', $username);
+        $req->bindValue(':password', $password);
+
+        $req->execute();
+
+        return (bool) $req->fetch();
+    }
+
     public function getProfileByUsername($username)
     {
         $db = $this->dbConnect();

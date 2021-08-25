@@ -2,7 +2,7 @@
 
 $pageTitle = 'MAL - Panel';
 
-if(false)
+if($isConnected)
 {
     $headerTitle = 'My Panel';
     $headerLinkIcon = 'cog';
@@ -13,6 +13,6 @@ else
     $headerTitle = 'Welcome to MAL';
 }
 
-$content = '<a href="index.php?a=anime&id=11617">Anime</a><a href="index.php?a=profile&username=Razalael">Profile</a>';
+$content = '';
 
 require('view/template.php');

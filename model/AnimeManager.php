@@ -89,4 +89,15 @@ class AnimeManager extends Manager
 
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAnimesByTitle($title)
+    {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT animes.id, title, aired, status, type, score, cover FROM animes, types WHERE type_id = types.id AND title LIKE :title LIMIT 10');
+        $req->execute([':title' => '%'.$title.'%']);
+
+        $results = $req->fetchAll(PDO::FETCH_ASSOC);
+
+        return ($results)? $results : [];
+    }
 }

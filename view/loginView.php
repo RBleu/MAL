@@ -15,7 +15,6 @@ if(isset($errorMessage))
 
 ?>
 
-
 <div class="log-wrapper">
     <form action="index.php?a=login" class="log" method="post">
         <label for="username">Username</label>
