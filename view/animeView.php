@@ -24,11 +24,11 @@ ob_start();
                     if($anime['premiered'] != null)
                     {
                         ?>
-                            <div><span>Premiered: </span><a href="#" class="link"><?= $anime['premiered'] ?></a></div>
+                            <div><span>Premiered: </span><a href="index.php?a=search&season=<?= urlencode($anime['premiered']) ?>" class="link"><?= $anime['premiered'] ?></a></div>
                         <?php
                     }
                 ?>
-                <div id="genres"><span>Genres: </span><?= implode(', ', array_map(function($val){ return '<a href=\'#\' class=\'link\'>'.$val['genre'].'</a>'; }, $genres)) ?></div>
+                <div id="genres"><span>Genres: </span><?= implode(', ', array_map(function($val){ return '<a href=\'index.php?a=search&genre='.$val['id'].'\' class=\'link\'>'.$val['genre'].'</a>'; }, $genres)) ?></div>
                 <div><span>Duration: </span><?= $anime['duration'] ?></div>
             </div>
         </div>

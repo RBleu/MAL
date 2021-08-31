@@ -62,7 +62,19 @@ try
             case 'search':
                 if(isset($_GET['q']))
                 {
-                    searchAnime($_GET['q']);
+                    searchAnimeByTitle($_GET['q'], isset($_GET['js']));
+                }
+                elseif(isset($_GET['season']))
+                {
+                    searchAnimeBySeason($_GET['season']);
+                }
+                elseif(isset($_GET['genre']) && is_numeric($_GET['genre']))
+                {
+                    searchAnimeByGenre($_GET['genre']);
+                }
+                else
+                {
+                    throw new Exception('search');
                 }
                 break;
         }

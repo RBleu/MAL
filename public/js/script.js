@@ -20,9 +20,9 @@ $(function() {
     });
 
     $('#search').on('keyup', (e) => {
-        let searchTitle = $('#search').val();
+        let title = $('#search').val();
         
-        if(searchTitle.length > 2)
+        if(title.length > 2)
         {
             if(e.keyCode == 13)
             {
@@ -30,7 +30,7 @@ $(function() {
             }
             else
             {
-                getSearchResult(searchTitle);
+                getSearchResult(title);
             }
         }
         else
@@ -40,12 +40,17 @@ $(function() {
     });
 
     $('#search').on('click', () => {
-        let searchTitle = $('#search').val();
+        let title = $('#search').val();
         
-        if(searchTitle.length > 2)
+        if(title.length > 2)
         {
             $('#search-result').show();
         }
+    });
+
+    $('#search-btn').on('click', () => {
+        let title = $('#search').val();
+        sendSearchTitle(title);
     });
 });
 
@@ -105,7 +110,8 @@ async function getSearchResult(title)
         method: 'GET',
         data: {
             a: 'search',
-            q: title
+            q: title,
+            js: ''
         },
         success: (data) => {
             let results = JSON.parse(data);
@@ -133,4 +139,9 @@ async function getSearchResult(title)
             console.log(msg);    
         }
     });
+}
+
+function sendSearchTitle(title)
+{
+    document.location.href = `index.php?a=search&q=${encodeURIComponent(title)}`;
 }

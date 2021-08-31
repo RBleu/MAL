@@ -84,11 +84,50 @@ function checkCookies()
     }
 }
 
-function searchAnime($title)
+function searchAnimeByTitle($title, $isSearchBar)
 {
+    global $isConnected;
     $animeManager = new AnimeManager();
 
-    $results = $animeManager->getAnimesByTitle($title);
+    $data = $animeManager->getAnimesByTitle($title, $isSearchBar);
 
-    echo json_encode($results);
+    if($isSearchBar)
+    {
+        echo json_encode($data);
+    }
+    else
+    {
+        $animes = $data['animes'];
+        $genres = $data['genres'];
+
+        require('view/searchView.php');
+    }
+}
+
+function searchAnimeByGenre($genre)
+{
+    global $isConnected;
+    $animeManager = new AnimeManager();
+
+    $data = $animeManager->getAnimeByGenre($genre);
+
+    $animes = $data['animes'];
+    $genres = $data['genres'];
+
+    require('view/searchView.php');
+}
+
+function searchAnimeBySeason($season)
+{
+    global $isConnected;
+    $animeManager = new AnimeManager();
+
+    $season = urldecode($season);
+
+    $data = $animeManager->getAnimeBySeason($season);
+
+    $animes = $data['animes'];
+    $genres = $data['genres'];
+
+    require('view/searchView.php');
 }
