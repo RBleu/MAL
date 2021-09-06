@@ -1,0 +1,23 @@
+#content-container
+{
+    display: flex;
+    padding: 10px 0;
+}
+
+#content-left
+{
+    width: 800px;
+    padding: 0 10px;
+}
+
+.info-content
+{
+    height: 220px;
+    background-color: red;
+}
+
+#content-right
+{
+    width: 300px;
+    border-left: 1px solid var(--light-blue);
+}

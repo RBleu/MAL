@@ -141,9 +141,15 @@ class AnimeManager extends Manager
             $genres[$anime['id']] = $this->getAnimeGenres($anime['id']);
         }
 
+        $req = $db->prepare('SELECT genre FROM genres WHERE genres.id = :genre');
+        $req->execute([':genre' => $genre]);
+
+        $genre_name = $req->fetch(PDO::FETCH_ASSOC)['genre'];
+
         return [
             'animes' => $animes,
-            'genres'  => $genres
+            'genres' => $genres,
+            'genre'  => $genre_name 
         ];
     }
 

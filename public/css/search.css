@@ -1,3 +1,59 @@
+/* SEASON */
+
+#anime-results-header
+{
+    display: flex;
+    border-bottom: 1px solid var(--blue);
+    margin: 15px 24.5px 0 24.5px;
+}
+
+.season-nav a
+{
+    color: var(--blue);
+    padding: 5px 10px;
+    margin-right: 5px;
+}
+
+.season-nav a:hover, 
+.season-nav a.selected
+{
+    background-color: var(--blue);
+    color: white;
+}
+
+#jump-form
+{
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    font-size: 14px;
+}
+
+#season-select
+{
+    width: 75px;
+}
+
+.jump-input
+{
+    border: 1px solid #d8d8d8;
+    padding: 2px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+#go
+{
+    border: none;
+    background-color: var(--blue);
+    color: white;
+    padding: 2px 4px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+/* SEARCH */
+
 #results-wrapper
 {
     display: flex;

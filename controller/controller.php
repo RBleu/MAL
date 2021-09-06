@@ -17,6 +17,37 @@ function formatDate($format, $date)
     return date($format, strtotime($date));
 }
 
+function getCurrentSeason()
+{
+    $seasons = ['Winter ', 'Spring ', 'Summer ', 'Fall '];
+
+    return $seasons[ceil(date('n')/3) - 1].date('Y');
+}
+
+function getSeasons($season)
+{
+    $seasons = ['Winter ', 'Spring ', 'Summer ', 'Fall '];
+
+    $split = explode(' ', $season);
+
+    $iCurrent = array_search($split[0], $seasons);
+    $currentYear = (int)$split[1];
+
+    $iPrev = $iCurrent - 1;
+    $prevYear = ($iPrev < 0)? $currentYear - 1 : $currentYear;
+    $prevSeason = $seasons[(4 + $iPrev)%4].$prevYear;
+
+    $iNext = $iCurrent + 1;
+    $nextYear = ($iNext > 3)? $currentYear + 1 : $currentYear;
+    $nextSeason = $seasons[$iNext%4].$nextYear;
+
+    $iNextNext = $iNext + 1;
+    $nextNextYear = ($iNextNext > 3)? $currentYear + 1 : $currentYear;
+    $nextNextSeason = $seasons[$iNextNext%4].$nextNextYear;
+
+    return [$prevSeason, $season, $nextSeason, $nextNextSeason];
+}
+
 function displayAnime($id)
 {
     global $isConnected;
@@ -100,7 +131,10 @@ function searchAnimeByTitle($title, $isSearchBar)
         $animes = $data['animes'];
         $genres = $data['genres'];
 
-        require('view/searchView.php');
+        $pageTitle = 'Search - MAL';
+        $headerTitle = 'Search';    
+
+        require('view/searchTemplate.php');
     }
 }
 
@@ -113,8 +147,12 @@ function searchAnimeByGenre($genre)
 
     $animes = $data['animes'];
     $genres = $data['genres'];
+    $genre = $data['genre'];
 
-    require('view/searchView.php');
+    $pageTitle = $genre.' - MAL';
+    $headerTitle = $genre.' Anime';
+
+    require('view/searchTemplate.php');
 }
 
 function searchAnimeBySeason($season)
@@ -128,6 +166,14 @@ function searchAnimeBySeason($season)
 
     $animes = $data['animes'];
     $genres = $data['genres'];
+    $seasons = getSeasons($season);
 
-    require('view/searchView.php');
+    require('view/seasonView.php');
+}
+
+function displayIndex()
+{
+    global $isConnected;
+    $currentSeason = getCurrentSeason();
+    require('view/indexView.php');
 }

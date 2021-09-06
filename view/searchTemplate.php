@@ -1,10 +1,13 @@
 <?php
 
-$pageTitle = 'Search - MAL';
-$headerTitle = 'Search';
 $style = 'search';
 
 ob_start();
+
+if(isset($animeResultsHeader))
+{
+    echo $animeResultsHeader;
+}
 
 ?>
 

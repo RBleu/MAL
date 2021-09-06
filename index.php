@@ -77,11 +77,17 @@ try
                     throw new Exception('search');
                 }
                 break;
+            case 'jump':
+                header('Location: index.php?a=search&season='.urlencode(ucfirst($_POST['season-select'].' '.$_POST['year'])));
+                break;
+            default:
+                header('Location: ./');
+                break;
         }
     }
     else
     {
-        require('view/indexView.php');
+        displayIndex();
     }
 }
 catch(Exception $e)
