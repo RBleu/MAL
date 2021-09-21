@@ -85,6 +85,7 @@ function displayProfile($username)
 
 function loginUser($username, $password)
 {
+    global $isConnected;
     $userManager = new UserManager();
 
     // AUTRES VERIFICATIONS A EFFECTUER
@@ -175,5 +176,20 @@ function displayIndex()
 {
     global $isConnected;
     $currentSeason = getCurrentSeason();
+
+    $animeManager = new AnimeManager();
+
+    $currentSeasonAnime = $animeManager->getAnimeBySeason($currentSeason)['animes'];
+    $topAiringAnime = $animeManager->getTopAiringAnime();
+    $topUpcomingAnime = $animeManager->getTopUpcomingAnime();
+    $mostPopularAnime = $animeManager->getMostPopularAnime();
+
+    if($isConnected)
+    {
+        $userManager = new UserManager();
+        $profile = $userManager->getProfileByUsername($_COOKIE['username']);
+        $stats = $userManager->getProfileStats($profile['id']);
+    }
+
     require('view/indexView.php');
 }

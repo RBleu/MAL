@@ -8,6 +8,7 @@
 
     <!--    Styles    -->
     <link rel="stylesheet" href="public/css/style.css">
+    <link rel="stylesheet" href="public/css/splide.min.css">
 
     <?php
         if(isset($style))
@@ -20,6 +21,21 @@
 
     <!--    Scripts    -->
     <script src="public/js/jquery-3.6.0.min.js"></script>
+    <script src="public/js/splide.min.js"></script>
+    <script>
+        document.addEventListener( 'DOMContentLoaded', function () {
+            new Splide('.splide', {
+                type: 'loop',
+                pagination: false,
+                width: 760,
+                padding: {
+                    left: 0,
+                    right: '80px',
+                },
+                perPage: 4,
+            }).mount();
+        } );
+    </script>
     <script src="public/js/script.js"></script>
 
 </head>

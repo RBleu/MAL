@@ -76,7 +76,7 @@ class UserManager extends Manager
     public function getProfileTotalEpisodes($id)
     {
         $db = $this->dbConnect();
-        $req = $db->prepare('SELECT SUM(episodes) AS total_episodes FROM animes, users_lists WHERE user_id = :id AND animes.id = anime_id');
+        $req = $db->prepare('SELECT SUM(episodes) AS total_episodes FROM animes, users_lists, lists WHERE user_id = :id AND animes.id = anime_id AND lists.id = list_id AND list = "Completed"');
         $req->execute([':id' => $id]);
 
         return $req->fetch(PDO::FETCH_ASSOC)['total_episodes'];

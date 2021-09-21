@@ -173,4 +173,40 @@ class AnimeManager extends Manager
             'genres'  => $genres
         ];
     }
+
+    public function getTopAiringAnime()
+    {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT animes.id, title, cover, type, episodes, score, members FROM animes, types WHERE airing = 1 AND type_id = types.id ORDER BY score DESC LIMIT 5');
+
+        $req->execute();
+
+        $animes = $req->fetchAll(PDO::FETCH_ASSOC);
+
+        return $animes;
+    }
+
+    public function getTopUpcomingAnime()
+    {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT animes.id, title, cover, type, episodes, score, members FROM animes, types WHERE status = "Not yet aired" AND type_id = types.id ORDER BY members DESC LIMIT 5');
+
+        $req->execute();
+
+        $animes = $req->fetchAll(PDO::FETCH_ASSOC);
+
+        return $animes;
+    }
+
+    public function getMostPopularAnime()
+    {
+        $db = $this->dbConnect();
+        $req = $db->prepare('SELECT animes.id, title, cover, type, episodes, score, members FROM animes, types WHERE type_id = types.id ORDER BY members DESC LIMIT 10');
+
+        $req->execute();
+
+        $animes = $req->fetchAll(PDO::FETCH_ASSOC);
+
+        return $animes;
+    }
 }
