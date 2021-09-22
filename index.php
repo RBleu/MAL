@@ -77,6 +77,12 @@ try
                     throw new Exception('search');
                 }
                 break;
+            case 'animelist':
+                if(isset($_GET['username']))
+                {
+                    displayAnimeList($_GET['username']);
+                }
+                break;
             case 'jump':
                 header('Location: index.php?a=search&season='.urlencode(ucfirst($_POST['season-select'].' '.$_POST['year'])));
                 break;

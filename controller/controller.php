@@ -193,3 +193,15 @@ function displayIndex()
 
     require('view/indexView.php');
 }
+
+function displayAnimeList($username)
+{
+    $userManager = new UserManager();
+
+    $data = $userManager->getAnimeList($username);
+
+    $animelist = $data['animes'];
+    $lists = $data['lists'];
+
+    require('view/animelistView.php');
+}
