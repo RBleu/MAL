@@ -1,10 +1,12 @@
 <?php
 
-$pageTitle = 'MAL - Panel';
+$pageTitle  = 'MAL - Panel';
+$styles     = ['splide.min', 'index'];
+$scripts    = ['splide.min', 'index'];
 
 if($isConnected)
 {
-    $headerTitle = 'My Panel';
+    $headerTitle    = 'My Panel';
     $headerLinkIcon = 'cog';
     $headerLinkText = 'Panel Settings';
 }
@@ -12,8 +14,6 @@ else
 {
     $headerTitle = 'Welcome to MAL';
 }
-
-$style = 'index';
 
 ob_start();
 
@@ -28,7 +28,7 @@ ob_start();
                     <div class="splide__track">
                         <ul class="splide__list">
                             <?php
-                                foreach($currentSeasonAnime as $anime)
+                                foreach($currentSeasonAnimes as $anime)
                                 {
                                     ?>
                                         <li class="splide__slide">
@@ -58,7 +58,7 @@ ob_start();
                                 foreach($stats as $key => $value)
                                 {
                                     ?>
-                                        <div class="stat"><?= $key ?><div><?= $value ?></div></div>
+                                        <div class="stats"><?= $key ?><div><?= $value ?></div></div>
                                     <?php
                                 }
                             ?>
@@ -66,85 +66,41 @@ ob_start();
                     </div>
                 <?php
             }
+
+            foreach($topAnimes as $topTitle => $topArray)
+            {
+                ?>
+                    <div class="top">
+                        <div class="top-title"><?= $topTitle ?><a href="#" class="link">More</a></div>
+                        <div class="top-content">
+                <?php
+                
+                $size = count($topArray);
+                for($i = 0; $i < $size; $i++)
+                {
+                    $anime = $topArray[$i];
+                    ?>
+                        <div class="top-anime">
+                            <div class="top-number"><?= $i + 1 ?></div>
+                            <div class="top-cover"><a href="index.php?a=anime&id=<?= $anime['id'] ?>"><img src="public/images/anime_covers/<?= $anime['cover'] ?>" alt="anime-cover"></a></div>
+                            <div class="top-infos">
+                                <div class="top-anime-title"><a href="index.php?a=anime&id=<?= $anime['id'] ?>" class="link"><?= $anime['title'] ?></a></div>
+                                <div class="top-others"><?= $anime['type'].', '.(($anime['episodes'] == null)? 0 : $anime['episodes']).' eps, scored '.number_format($anime['score'], 2) ?></div>
+                                <div class="top-members"><?= number_format($anime['members']) ?> members</div>
+                            </div>
+                            <div class="top-list">
+                                <a href="#" class="add link">add</a>
+                            </div>
+                        </div>
+                    <?php
+                }
+
+                ?>
+                        </div>
+                    </div>
+                <?php
+            }
         ?>
-        <div class="top">
-            <div class="top-title">Top Airing Anime<a href="#" class="link">More</a></div>
-            <div class="top-content">
-                <?php
-                    $size = count($topAiringAnime);
-                    for($i = 0; $i < $size; $i++)
-                    {
-                        $anime = $topAiringAnime[$i];
-                        ?>
-                            <div class="top-anime">
-                                <div class="top-number"><?= $i + 1 ?></div>
-                                <div class="top-cover"><a href="index.php?a=anime&id=<?= $anime['id'] ?>"><img src="public/images/anime_covers/<?= $anime['cover'] ?>" alt="anime-cover"></a></div>
-                                <div class="top-infos">
-                                    <div class="top-anime-title"><a href="index.php?a=anime&id=<?= $anime['id'] ?>" class="link"><?= $anime['title'] ?></a></div>
-                                    <div class="top-others"><?= $anime['type'].', '.(($anime['episodes'] == null)? 0 : $anime['episodes']).' eps, scored '.number_format($anime['score'], 2) ?></div>
-                                    <div class="top-members"><?= number_format($anime['members']) ?> members</div>
-                                </div>
-                                <div class="top-list">
-                                    <a href="#" class="add link">add</a>
-                                </div>
-                            </div>
-                        <?php
-                    }
-                ?>
-            </div>
-        </div>
-        <div class="top">
-            <div class="top-title">Top Upcoming Anime<a href="#" class="link">More</a></div>
-            <div class="top-content">
-                <?php
-                    $size = count($topUpcomingAnime);
-                    for($i = 0; $i < $size; $i++)
-                    {
-                        $anime = $topUpcomingAnime[$i];
-                        ?>
-                            <div class="top-anime">
-                                <div class="top-number"><?= $i + 1 ?></div>
-                                <div class="top-cover"><a href="index.php?a=anime&id=<?= $anime['id'] ?>"><img src="public/images/anime_covers/<?= $anime['cover'] ?>" alt="anime-cover"></a></div>
-                                <div class="top-infos">
-                                    <div class="top-anime-title"><a href="index.php?a=anime&id=<?= $anime['id'] ?>" class="link"><?= $anime['title'] ?></a></div>
-                                    <div class="top-others"><?= $anime['type'].', '.(($anime['episodes'] == null)? 0 : $anime['episodes']).' eps, scored '.number_format($anime['score'], 2) ?></div>
-                                    <div class="top-members"><?= number_format($anime['members']) ?> members</div>
-                                </div>
-                                <div class="top-list">
-                                    <a href="#" class="add link">add</a>
-                                </div>
-                            </div>
-                        <?php
-                    }
-                ?>
-            </div>
-        </div>
-        <div class="top">
-            <div class="top-title">Top Upcoming Anime<a href="#" class="link">More</a></div>
-            <div class="top-content">
-                <?php
-                    $size = count($mostPopularAnime);
-                    for($i = 0; $i < $size; $i++)
-                    {
-                        $anime = $mostPopularAnime[$i];
-                        ?>
-                            <div class="top-anime">
-                                <div class="top-number"><?= $i + 1 ?></div>
-                                <div class="top-cover"><a href="index.php?a=anime&id=<?= $anime['id'] ?>"><img src="public/images/anime_covers/<?= $anime['cover'] ?>" alt="anime-cover"></a></div>
-                                <div class="top-infos">
-                                    <div class="top-anime-title"><a href="index.php?a=anime&id=<?= $anime['id'] ?>" class="link"><?= $anime['title'] ?></a></div>
-                                    <div class="top-others"><?= $anime['type'].', '.(($anime['episodes'] == null)? 0 : $anime['episodes']).' eps, scored '.number_format($anime['score'], 2) ?></div>
-                                    <div class="top-members"><?= number_format($anime['members']) ?> members</div>
-                                </div>
-                                <div class="top-list">
-                                    <a href="#" class="add link">add</a>
-                                </div>
-                            </div>
-                        <?php
-                    }
-                ?>
-            </div>
-        </div>
     </div>
 </div>
 

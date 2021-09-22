@@ -1,10 +1,16 @@
 <?php
 
+define('HOST', 'localhost');
+define('DBNAME', 'mal_test');
+define('USERNAME', 'root');
+define('PASSWORD', '');
+
 class Manager
 {
-    public function dbConnect()
+    protected $db;
+
+    function __construct()
     {
-        $db = new PDO('mysql:host=localhost;dbname=mal_test;charset=utf8', 'root', '');
-        return $db;
+        $this->db = new PDO('mysql:host='.HOST.';dbname='.DBNAME.';charset=utf8', USERNAME, PASSWORD);
     }
 }

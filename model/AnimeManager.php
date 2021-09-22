@@ -6,15 +6,14 @@ class AnimeManager extends Manager
 {
     public function getAnimeById($id)
     {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT title, cover, type, episodes, status, aired, premiered, duration, score, scored_by, rank, members, synopsis FROM animes, types WHERE type_id = types.id AND animes.id = :id');
-        $req->execute([':id' => $id]);
+        $req = $this->db->prepare('SELECT * FROM animes, types WHERE types.id = type_id AND animes.id = ?');
+        $req->execute(array($id));
 
         $anime = $req->fetch(PDO::FETCH_ASSOC);
 
         if(!$anime)
         {
-            throw new Exception('Anime not found');
+            throw new Exception('Wrong ID: this anime doesn\'t exist or can\'t be found');
         }
 
         return $anime;
@@ -22,191 +21,97 @@ class AnimeManager extends Manager
 
     public function getAnimeGenres($id)
     {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT genres.id, genre FROM genres, animes_genres WHERE genre_id = genres.id AND anime_id = :id');
-        $req->execute([':id' => $id]);
+        $req = $this->db->prepare('SELECT genres.id, genre FROM animes_genres, genres WHERE genre_id = genres.id AND anime_id = ?');
+        $req->execute(array($id));
 
-        return $req->fetchAll(PDO::FETCH_ASSOC);
+        $genres = $req->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_GROUP);
+
+        foreach($genres as $i => $genre)
+        {
+            $genres[$i] = $genre[0]['genre'];
+        }
+
+        return $genres;
     }
 
     public function getAnimeRelations($id)
     {
-        $db = $this->dbConnect();
-
-        // Prequels
-        $req = $db->prepare('SELECT id, title FROM animes, animes_relations WHERE sequel_id = :id AND prequel_id = animes.id');
-        $req->execute([':id' => $id]);
+        $req = $this->db->prepare('SELECT id, title FROM animes_relations, animes WHERE sequel_id = ? AND animes.id = prequel_id');
+        $req->execute(array($id));
 
         $prequels = $req->fetchAll(PDO::FETCH_ASSOC);
 
         $req->closeCursor();
 
-        // Sequels
-        $req = $db->prepare('SELECT id, title FROM animes, animes_relations WHERE prequel_id = :id AND sequel_id = animes.id');
-        $req->execute([':id' => $id]);
+        $req = $this->db->prepare('SELECT id, title FROM animes_relations, animes WHERE prequel_id = ? AND sequel_id = animes.id');
+        $req->execute(array($id));
 
         $sequels = $req->fetchAll(PDO::FETCH_ASSOC);
 
-        $req->closeCursor();
-
         return [
             'prequels' => $prequels,
-            'sequels'  => $sequels
+            'sequels'  => $sequels,
         ];
     }
 
     public function getAnimeThemes($id)
     {
-        $db = $this->dbConnect();
+        $req = $this->db->prepare('SELECT theme_type, theme FROM themes WHERE anime_id = ?');
+        $req->execute(array($id));
 
-        // Openings
-        $req = $db->prepare('SELECT theme FROM themes WHERE anime_id = :id AND theme_type = \'Opening\'');
-        $req->execute([':id' => $id]);
+        $themes = $req->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_GROUP);
 
-        $openings = $req->fetchAll(PDO::FETCH_ASSOC);
+        foreach($themes as $type => $theme)
+        {
+            $themes[$type] = array_map(function($val){ return $val['theme']; }, $theme);
+        }
 
-        $req->closeCursor();
-
-        // Endings
-        $req = $db->prepare('SELECT theme FROM themes WHERE anime_id = :id AND theme_type = \'Ending\'');
-        $req->execute([':id' => $id]);
-
-        $endings = $req->fetchAll(PDO::FETCH_ASSOC);
-
-        $req->closeCursor();
-
-        return [
-            'openings' => $openings,
-            'endings'  => $endings
-        ];
+        return $themes;
     }
 
-    public function getAnimeReviews($id)
+    public function getAnimesBySeason($season)
     {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT username, review, likes FROM reviews, users WHERE anime_id = :id AND user_id = users.id ORDER BY likes DESC LIMIT 3');
-        $req->execute([':id' => $id]);
+        $req = $this->db->prepare('SELECT animes.id, title, cover, aired_from, synopsis, type, score, members, episodes FROM animes, types WHERE type_id = types.id AND premiered = ?');
+        $req->execute(array($season));
 
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAnimesByTitle($title, $isSearchBar)
+    public function getTopAnimes($order_by, $limit, $where = 1)
     {
-        $db = $this->dbConnect();
-
-        if($isSearchBar)
-        {
-            $req = $db->prepare('SELECT id, title, aired, status, score, cover FROM animes WHERE title LIKE :title LIMIT 10');
-            $req->execute([':title' => '%'.$title.'%']);
-
-            $animes = $req->fetchAll(PDO::FETCH_ASSOC);
-
-            return ($animes)? $animes : [];
-        }
-        else
-        {
-            $req = $db->prepare('SELECT animes.id, title, cover, aired_from, synopsis, type, score, members, episodes FROM animes, types WHERE type_id = types.id AND title LIKE :title');
-            $req->execute([':title' => '%'.$title.'%']);
-
-            $animes = $req->fetchAll(PDO::FETCH_ASSOC);
-
-            $req->closeCursor();
-
-            $genres = [];
-
-            foreach($animes as $anime)
-            {
-                $genres[$anime['id']] = $this->getAnimeGenres($anime['id']);
-            }
-
-            return [
-                'animes' => $animes,
-                'genres'  => $genres
-            ];
-        }
+        $req = $this->db->query("SELECT animes.id, title, cover, type, episodes, score, members FROM animes, types WHERE $where AND types.id = type_id ORDER BY $order_by DESC LIMIT $limit");
+        return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAnimeByGenre($genre)
+    public function getAnimesByTitleJs($title)
     {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT animes.id, title, cover, aired_from, synopsis, type, score, members, episodes FROM animes, types, animes_genres WHERE type_id = types.id AND animes.id = anime_id AND genre_id = :genre');
-        $req->execute([':genre' => $genre]);
+        $req = $this->db->prepare('SELECT id, title, aired, status, score, cover FROM animes WHERE title LIKE ? LIMIT 10');
+        $req->execute(array('%'.$title.'%'));
 
-        $animes = $req->fetchAll(PDO::FETCH_ASSOC);
-
-        $genres = [];
-
-        foreach($animes as $anime)
-        {
-            $genres[$anime['id']] = $this->getAnimeGenres($anime['id']);
-        }
-
-        $req = $db->prepare('SELECT genre FROM genres WHERE genres.id = :genre');
-        $req->execute([':genre' => $genre]);
-
-        $genre_name = $req->fetch(PDO::FETCH_ASSOC)['genre'];
-
-        return [
-            'animes' => $animes,
-            'genres' => $genres,
-            'genre'  => $genre_name 
-        ];
+        return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAnimeBySeason($season)
+    public function getAnimesByTitle($title)
     {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT animes.id, title, cover, aired_from, synopsis, type, score, members, episodes FROM animes, types WHERE type_id = types.id AND premiered = :premiered');
-        $req->execute([':premiered' => $season]);
+        $req = $this->db->prepare('SELECT animes.id, title, cover, aired_from, synopsis, type, score, members, episodes FROM animes, types WHERE type_id = types.id AND title LIKE ?');
+        $req->execute(array('%'.$title.'%'));
 
-        $animes = $req->fetchAll(PDO::FETCH_ASSOC);
-
-        $genres = [];
-
-        foreach($animes as $anime)
-        {
-            $genres[$anime['id']] = $this->getAnimeGenres($anime['id']);
-        }
-
-        return [
-            'animes' => $animes,
-            'genres'  => $genres
-        ];
+        return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getTopAiringAnime()
+    public function getAnimesByGenre($genre)
     {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT animes.id, title, cover, type, episodes, score, members FROM animes, types WHERE airing = 1 AND type_id = types.id ORDER BY score DESC LIMIT 5');
+        $req = $this->db->prepare('SELECT animes.id, title, cover, aired_from, synopsis, type, score, members, episodes FROM animes, types, animes_genres WHERE type_id = types.id AND animes.id = anime_id AND genre_id = ?');
+        $req->execute(array($genre));
 
-        $req->execute();
-
-        $animes = $req->fetchAll(PDO::FETCH_ASSOC);
-
-        return $animes;
+        return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getTopUpcomingAnime()
+    public function getGenreById($id)
     {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT animes.id, title, cover, type, episodes, score, members FROM animes, types WHERE status = "Not yet aired" AND type_id = types.id ORDER BY members DESC LIMIT 5');
+        $req = $this->db->prepare('SELECT genre FROM genres WHERE id = ?');
+        $req->execute(array($id));
 
-        $req->execute();
-
-        $animes = $req->fetchAll(PDO::FETCH_ASSOC);
-
-        return $animes;
-    }
-
-    public function getMostPopularAnime()
-    {
-        $db = $this->dbConnect();
-        $req = $db->prepare('SELECT animes.id, title, cover, type, episodes, score, members FROM animes, types WHERE type_id = types.id ORDER BY members DESC LIMIT 10');
-
-        $req->execute();
-
-        $animes = $req->fetchAll(PDO::FETCH_ASSOC);
-
-        return $animes;
+        return $req->fetch(PDO::FETCH_ASSOC);
     }
 }

@@ -26,7 +26,7 @@ $(function() {
         {
             if(e.keyCode == 13)
             {
-                $('#search-btn').trigger('click');
+                $('#searchbar').trigger('submit');
             }
             else
             {
@@ -47,13 +47,7 @@ $(function() {
             $('#search-result').show();
         }
     });
-
-    $('#search-btn').on('click', () => {
-        let title = $('#search').val();
-        sendSearchTitle(title);
-    });
 });
-
 
 function getResultItem(anime) {
     let resultItem = document.createElement('a');
@@ -117,7 +111,9 @@ async function getSearchResult(title)
             let results = JSON.parse(data);
             $('#search-result').html('');
 
-            if(results.length == 0)
+            console.log(results);
+
+            if(!results || results.length == 0)
             {
                 let nores = document.createElement('div');
                 nores.className = 'no-result';
@@ -139,9 +135,4 @@ async function getSearchResult(title)
             console.log(msg);    
         }
     });
-}
-
-function sendSearchTitle(title)
-{
-    document.location.href = `index.php?a=search&q=${encodeURIComponent(title)}`;
 }

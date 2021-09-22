@@ -8,36 +8,36 @@
 
     <!--    Styles    -->
     <link rel="stylesheet" href="public/css/style.css">
-    <link rel="stylesheet" href="public/css/splide.min.css">
+    <link rel="stylesheet" href="public/css/template.css">
 
     <?php
-        if(isset($style))
+        if(isset($styles))
         {
-            ?>
-                <link rel="stylesheet" href="public/css/<?= $style ?>.css">
-            <?php
+            foreach($styles as $style)
+            {
+                ?>
+                    <link rel="stylesheet" href="public/css/<?= $style ?>.css">
+                <?php
+            }
         }
     ?>
 
     <!--    Scripts    -->
     <script src="public/js/jquery-3.6.0.min.js"></script>
-    <script src="public/js/splide.min.js"></script>
-    <script>
-        document.addEventListener( 'DOMContentLoaded', function () {
-            new Splide('.splide', {
-                type: 'loop',
-                pagination: false,
-                width: 760,
-                padding: {
-                    left: 0,
-                    right: '80px',
-                },
-                perPage: 4,
-            }).mount();
-        } );
-    </script>
-    <script src="public/js/script.js"></script>
 
+    <?php
+        if(isset($scripts))
+        {
+            foreach($scripts as $script)
+            {
+                ?>
+                    <script src="public/js/<?= $script ?>.js"></script>
+                <?php
+            }
+        }
+    ?>
+
+    <script src="public/js/script.js"></script>
 </head>
 <body>
     <div id="mal">
@@ -120,13 +120,14 @@
                     </div>
                 </div>
             </div>
-            <div id="searchbar">
+            <form action="index.php" id="searchbar" method="GET">
                 <div id="searchbar-container">
-                    <input type="text" name="search" id="search" autocomplete="off">
+                    <input type="hidden" name="a" value="search">
+                    <input type="text" name="q" id="search" autocomplete="off">
                     <div id="search-result"></div>
                 </div>
-                <button id="search-btn"><img src="public/images/icons/search.svg" alt="search-icon"></button>
-            </div>
+                <button id="search-btn" type="submit"><img src="public/images/icons/search.svg" alt="search-icon"></button>
+            </form>
         </div>
         <div id="content-wrapper">
             <div id="content-header">

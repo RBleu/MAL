@@ -7,7 +7,7 @@ ob_start();
 
 ?>
     <div id="anime-results-header">
-        <div class="season-nav"><a href="#">...</a></div>
+        <div class="season-nav"><a href="index.php?a=search&season=<?= urldecode($seasons[0]) ?>">...</a></div>
         <?php
             for($i = 0; $i < count($seasons); $i++)
             {
@@ -25,6 +25,7 @@ ob_start();
                 }
             }
         ?>
+        <div class="season-nav"><a href="index.php?a=search&season=<?= urldecode($currentSeason) ?>">Current</a></div>
         <form id="jump-form" action="index.php?a=jump" method="post">
             <div>Jump to</div>
             <select class="jump-input" name="season-select" id="season-select">

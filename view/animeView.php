@@ -4,7 +4,7 @@ $pageTitle = $anime['title'].' - MAL';
 $headerTitle = $anime['title'];
 $headerLinkIcon = 'pencil';
 $hederLinkText = 'Edit';
-$style = 'anime';
+$styles = ['anime'];
 
 ob_start();
 
@@ -28,7 +28,17 @@ ob_start();
                         <?php
                     }
                 ?>
-                <div id="genres"><span>Genres: </span><?= implode(', ', array_map(function($val){ return '<a href=\'index.php?a=search&genre='.$val['id'].'\' class=\'link\'>'.$val['genre'].'</a>'; }, $genres)) ?></div>
+                <div id="genres">
+                    <span>Genres: </span>
+                    <?php
+                        $genresHTML = [];
+                        foreach($genres as $id => $genre)
+                        {
+                            $genresHTML[] = '<a href=\'index.php?a=search&genre='.$id.'\' class=\'link\'>'.$genre.'</a>';
+                        }
+                        echo implode(', ', $genresHTML);
+                    ?>
+                </div>
                 <div><span>Duration: </span><?= $anime['duration'] ?></div>
             </div>
         </div>
@@ -37,7 +47,7 @@ ob_start();
         <div id="stats">
             <div id="score">
                 <div id="score-label">Score</div>
-                <div id="score-value"><?= ($anime['score'] == null)? 'N/A' : $anime['score'] ?></div>
+                <div id="score-value"><?= ($anime['score'] == null)? 'N/A' : number_format($anime['score'], 2) ?></div>
             </div>
             <div class="stats-content">
                 <div id="rank-label">Ranked</div>
@@ -121,14 +131,17 @@ ob_start();
             }
         ?>
         <div id="themes">
-            <div class="info">
-                <div class="title">Opening Theme<a href="#" class="link">Edit</a></div>
-                <div class="info-content"><?= implode('', array_map(function($val){ return '<div>'.$val['theme'].'</div>'; }, $openings)) ?></div>
-            </div>
-            <div class="info">
-                <div class="title">Ending Theme<a href="#" class="link">Edit</a></div>
-                <div class="info-content"><?= implode('', array_map(function($val){ return '<div>'.$val['theme'].'</div>'; }, $endings)) ?></div>
-            </div>
+            <?php
+                foreach($themes as $type => $songs)
+                {
+                    ?>  
+                        <div class="info">
+                            <div class="title"><?= $type ?> Theme<a href="#" class="link">Edit</a></div>
+                            <div class="info-content"><?= implode('', array_map(function($val){ return '<div>'.$val.'</div>'; }, $songs)) ?></div>
+                        </div>
+                    <?php
+                }
+            ?>
         </div>
     </div>
 </div>

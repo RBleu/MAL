@@ -2,7 +2,7 @@
 
 $pageTitle = 'Login - MAL';
 $headerTitle = 'Login';
-$style = 'loginSignup';
+$styles = ['loginSignup'];
 
 ob_start();
 

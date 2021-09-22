@@ -5,10 +5,10 @@ require_once('model/UserManager.php');
 
 $isConnected = false;
 
-function print_a($arr)
+function print_a($array)
 {
     echo '<pre>';
-    print_r($arr);
+    print_r($array);
     echo '</pre>';
 }
 
@@ -24,9 +24,9 @@ function getCurrentSeason()
     return $seasons[ceil(date('n')/3) - 1].date('Y');
 }
 
-function getSeasons($season)
+function getPrevNextSeasons($season)
 {
-    $seasons = ['Winter ', 'Spring ', 'Summer ', 'Fall '];
+    $seasons = ['Winter', 'Spring', 'Summer', 'Fall'];
 
     $split = explode(' ', $season);
 
@@ -35,173 +35,197 @@ function getSeasons($season)
 
     $iPrev = $iCurrent - 1;
     $prevYear = ($iPrev < 0)? $currentYear - 1 : $currentYear;
-    $prevSeason = $seasons[(4 + $iPrev)%4].$prevYear;
+    $prevSeason = $seasons[(4 + $iPrev)%4].' '.$prevYear;
 
     $iNext = $iCurrent + 1;
     $nextYear = ($iNext > 3)? $currentYear + 1 : $currentYear;
-    $nextSeason = $seasons[$iNext%4].$nextYear;
+    $nextSeason = $seasons[$iNext%4].' '.$nextYear;
 
     $iNextNext = $iNext + 1;
     $nextNextYear = ($iNextNext > 3)? $currentYear + 1 : $currentYear;
-    $nextNextSeason = $seasons[$iNextNext%4].$nextNextYear;
+    $nextNextSeason = $seasons[$iNextNext%4].' '.$nextNextYear;
 
     return [$prevSeason, $season, $nextSeason, $nextNextSeason];
-}
-
-function displayAnime($id)
-{
-    global $isConnected;
-    $animeManager = new AnimeManager();
-
-    $anime = $animeManager->getAnimeById($id);
-    $genres = $animeManager->getAnimeGenres($id);
-
-    $relations = $animeManager->getAnimeRelations($id);
-    $prequels = $relations['prequels'];
-    $sequels = $relations['sequels'];
-
-    $themes = $animeManager->getAnimeThemes($id);
-    $openings = $themes['openings'];
-    $endings = $themes['endings'];
-
-    $reviews = $animeManager->getAnimeReviews($id);
-
-    require('view/animeView.php');
-}
-
-function displayProfile($username)
-{
-    global $isConnected;
-    $userManager = new UserManager();
-
-    $profile = $userManager->getProfileByUsername($username);
-    $stats = $userManager->getProfileStats($profile['id']);
-    $totalAnimes = array_sum($stats);
-    $history = $userManager->getProfileHistory($profile['id']);
-    $totalEpisodes = $userManager->getProfileTotalEpisodes($profile['id']);
-
-    require('view/profileView.php');
-}
-
-function loginUser($username, $password)
-{
-    global $isConnected;
-    $userManager = new UserManager();
-
-    // AUTRES VERIFICATIONS A EFFECTUER
-
-    $hash = $userManager->checkPassword($username, $password);
-
-    if(!$userManager->exists($username) || !$hash)
-    {
-        $errorMessage = 'Username or Password invalid';
-        require('view/loginView.php');
-        return;
-    }
-
-    setcookie('username', $username, time() + 7*24*3600, null, null, false, true);
-    setcookie('password', $hash, time() + 7*24*3600, null, null, false, true);
-
-    header('Location: ./');
 }
 
 function checkCookies()
 {
     global $isConnected;
+
     if(isset($_COOKIE['username']) && isset($_COOKIE['password']))
     {
         $userManager = new UserManager();
+        $isConnected = $userManager->check($_COOKIE['username'], $_COOKIE['password']);
 
-        $isConnected = $userManager->exists($_COOKIE['username']) && $userManager->checkPasswordHash($_COOKIE['username'], $_COOKIE['password']);
+        if(!$isConnected)
+        {
+            header('Location: index.php?a=logout');
+        }
     }
-}
-
-function searchAnimeByTitle($title, $isSearchBar)
-{
-    global $isConnected;
-    $animeManager = new AnimeManager();
-
-    $data = $animeManager->getAnimesByTitle($title, $isSearchBar);
-
-    if($isSearchBar)
-    {
-        echo json_encode($data);
-    }
-    else
-    {
-        $animes = $data['animes'];
-        $genres = $data['genres'];
-
-        $pageTitle = 'Search - MAL';
-        $headerTitle = 'Search';    
-
-        require('view/searchTemplate.php');
-    }
-}
-
-function searchAnimeByGenre($genre)
-{
-    global $isConnected;
-    $animeManager = new AnimeManager();
-
-    $data = $animeManager->getAnimeByGenre($genre);
-
-    $animes = $data['animes'];
-    $genres = $data['genres'];
-    $genre = $data['genre'];
-
-    $pageTitle = $genre.' - MAL';
-    $headerTitle = $genre.' Anime';
-
-    require('view/searchTemplate.php');
-}
-
-function searchAnimeBySeason($season)
-{
-    global $isConnected;
-    $animeManager = new AnimeManager();
-
-    $season = urldecode($season);
-
-    $data = $animeManager->getAnimeBySeason($season);
-
-    $animes = $data['animes'];
-    $genres = $data['genres'];
-    $seasons = getSeasons($season);
-
-    require('view/seasonView.php');
 }
 
 function displayIndex()
 {
     global $isConnected;
-    $currentSeason = getCurrentSeason();
 
     $animeManager = new AnimeManager();
 
-    $currentSeasonAnime = $animeManager->getAnimeBySeason($currentSeason)['animes'];
-    $topAiringAnime = $animeManager->getTopAiringAnime();
-    $topUpcomingAnime = $animeManager->getTopUpcomingAnime();
-    $mostPopularAnime = $animeManager->getMostPopularAnime();
+    $currentSeason       = getCurrentSeason();
+    $currentSeasonAnimes = $animeManager->getAnimesBySeason($currentSeason);
+
+    $topAnimes = [];
+    $topAnimes['Top Airing Anime']   = $animeManager->getTopAnimes('score', 5, 'airing = 1');
+    $topAnimes['Top Upcoming Anime'] = $animeManager->getTopAnimes('members', 5, 'status = "Not yet aired"');
+    $topAnimes['Most Popular Anime'] = $animeManager->getTopAnimes('members', 10);
 
     if($isConnected)
     {
         $userManager = new UserManager();
-        $profile = $userManager->getProfileByUsername($_COOKIE['username']);
-        $stats = $userManager->getProfileStats($profile['id']);
+        $stats       = $userManager->getProfileStats($_COOKIE['username']);
     }
 
     require('view/indexView.php');
+}
+
+function displayAnime($id)
+{
+    global $isConnected;
+
+    $animeManager = new AnimeManager();
+
+    $anime     = $animeManager->getAnimeById($id);
+    $genres    = $animeManager->getAnimeGenres($id);
+
+    $relations = $animeManager->getAnimeRelations($id);
+    $prequels  = $relations['prequels'];
+    $sequels   = $relations['sequels'];
+
+    $themes    = $animeManager->getAnimeThemes($id);
+
+    require('view/animeView.php');
+}
+
+function loginUser($username, $password)
+{
+    global $isConnected;
+
+    $userManager = new UserManager();
+
+    $hash = $userManager->getPasswordHash($username);
+
+    if(!$hash || !password_verify($password, $hash['password']))
+    {
+        $errorMessage = 'Wrong username and/or wrong password';
+        require('view/loginView.php');
+        return;
+    }
+
+    setcookie('username', $username, time() + 7*24*3600, null, null, false, true);
+    setcookie('password', $hash['password'], time() + 7*24*3600, null, null, false, true);
+
+    header('Location: ./');
+}
+
+function searchAnimesByTitleJs($title)
+{
+    $animeManager = new AnimeManager();
+
+    $animes = $animeManager->getAnimesByTitleJs($title);
+
+    echo json_encode($animes);
+}
+
+function getAnimesGenres($animeManager, $animes)
+{
+    $genres = [];
+
+    foreach($animes as $anime)
+    {
+        $genres[$anime['id']] = $animeManager->getAnimeGenres($anime['id']);
+    }
+
+    return $genres;
+}
+
+function searchAnimesByTitle($title)
+{
+    global $isConnected;
+
+    $animeManager = new AnimeManager();
+
+    $animes = $animeManager->getAnimesByTitle($title);
+    $genres = getAnimesGenres($animeManager, $animes);
+
+    $pageTitle   = 'Search - MAL';
+    $headerTitle = 'Search';    
+
+    require('view/searchTemplate.php');
+}
+
+function searchAnimesBySeason($season)
+{
+    global $isConnected;
+
+    $animeManager  = new AnimeManager();
+    $currentSeason = getCurrentSeason();
+
+    if(!preg_match('/(Winter|Spring|Summer|Fall) [0-9]{4}/', $season))
+    {
+        header('Location: index.php?a=search&season='.urlencode($currentSeason));
+        return;
+    }
+
+    $animes = $animeManager->getAnimesBySeason($season);
+    $genres = getAnimesGenres($animeManager, $animes);
+    
+    $seasons = getPrevNextSeasons($season);
+
+    require('view/seasonView.php');
+}
+
+function searchAnimesByGenre($genreId)
+{
+    global $isConnected;
+
+    $animeManager = new AnimeManager();
+
+    $genre = $animeManager->getGenreById($genreId);
+
+    if(!$genre)
+    {
+        throw new Exception('Genre not found');
+    }
+
+    $animes = $animeManager->getAnimesByGenre($genreId);
+    $genres = getAnimesGenres($animeManager, $animes);
+
+    $pageTitle   = $genre['genre'].' - MAL';
+    $headerTitle = $genre['genre'].' Anime';
+    
+    require('view/searchTemplate.php');
+}
+
+function displayProfile($username)
+{
+    global $isConnected;
+
+    $userManager = new UserManager();
+
+    $profile = $userManager->getProfileByUsername($username);
+    $stats = $userManager->getProfileStats($username);
+    $totalAnimes = array_sum($stats);
+    $history = $userManager->getProfileHistory($username);
+    $totalEpisodes = $userManager->getProfileTotalEpisodes($username);
+
+    require('view/profileView.php');
 }
 
 function displayAnimeList($username)
 {
     $userManager = new UserManager();
 
-    $data = $userManager->getAnimeList($username);
-
-    $animelist = $data['animes'];
-    $lists = $data['lists'];
+    $animelist = $userManager->getAnimeList($username);
+    $lists     = $userManager->getAllLists();
 
     require('view/animelistView.php');
 }

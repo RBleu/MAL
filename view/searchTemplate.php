@@ -1,6 +1,6 @@
 <?php
 
-$style = 'search';
+$styles = ['search'];
 
 ob_start();
 
@@ -21,10 +21,10 @@ if(isset($animeResultsHeader))
                     <div class="anime-episodes"><?= $anime['episodes'] ?> eps</div>
                     <div class="anime-genres">
                         <?php
-                            foreach($genres[$anime['id']] as $genre)
+                            foreach($genres[$anime['id']] as $id => $genre)
                             {
                                 ?>
-                                    <div class="anime-genre"><a href="index.php?a=search&genre=<?= $genre['id'] ?>"><?= $genre['genre'] ?></a></div>
+                                    <div class="anime-genre"><a href="index.php?a=search&genre=<?= $id ?>"><?= $genre ?></a></div>
                                 <?php
                             }
                         ?>
@@ -36,8 +36,8 @@ if(isset($animeResultsHeader))
                     <div class="anime-infos">
                         <div class="anime-infos-left"><?= $anime['type'].' - '.formatDate('M j, Y', $anime['aired_from']) ?></div>
                         <div class="anime-infos-right">
-                            <div><?= $anime['score'] ?></div>
-                            <div><?= $anime['members'] ?></div>
+                            <div><?= number_format($anime['score'], 2) ?></div>
+                            <div><?= number_format($anime['members']) ?></div>
                         </div>
                     </div>
                 </div>

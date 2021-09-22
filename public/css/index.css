@@ -96,13 +96,13 @@
     border-left: 1px solid var(--light-blue);
 }
 
-.stat
+.stats
 {
     display: flex;
     width: 150px;
 }
 
-.stat div
+.stats div
 {
     margin-left: auto;
 }

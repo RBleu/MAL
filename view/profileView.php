@@ -4,7 +4,7 @@ $pageTitle = $username.'\'s Profile - MAL';
 $headerTitle = $username.'\'s Profile';
 $headerLinkIcon = 'cog';
 $headerLinkText = 'Edit Profile';
-$style = 'profile';
+$styles = ['profile'];
 
 ob_start();
 
