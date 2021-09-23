@@ -220,11 +220,11 @@ function displayProfile($username)
     require('view/profileView.php');
 }
 
-function displayAnimeList($username)
+function displayAnimeList($username, $listId = 2)
 {
     $userManager = new UserManager();
 
-    $animelist = $userManager->getAnimeList($username);
+    $animelist = $userManager->getAnimeList($username, $listId);
     $lists     = $userManager->getAllLists();
 
     require('view/animelistView.php');

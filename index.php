@@ -96,7 +96,14 @@ try
             case 'animelist':
                 if(isset($_GET['username']) && $_GET['username'] != '')
                 {
-                    displayAnimeList($_GET['username']);
+                    if(isset($_GET['list']) && is_numeric($_GET['list']) && $_GET['list'] > 0)
+                    {
+                        displayAnimeList($_GET['username'], $_GET['list']);
+                    }
+                    else
+                    {
+                        displayAnimeList($_GET['username']);
+                    }
                 }
                 else
                 {

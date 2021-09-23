@@ -65,12 +65,15 @@ class UserManager extends Manager
         return $req->fetch(PDO::FETCH_ASSOC)['total_episodes'];
     }
 
-    public function getAnimeList($username)
+    public function getAnimeList($username, $listId)
     {
-        $req = $this->db->prepare('SELECT list, animes.id, cover, title, progress_episodes, episodes, premiered, aired_from, aired_to, priority FROM users_lists, users, animes, priorities, lists WHERE lists.id = list_id AND priority_id = priorities.id AND animes.id = anime_id AND users.id = user_id AND username = ? ORDER BY title');
-        $req->execute(array($username));
+        $req = $this->db->prepare('SELECT animes.id, cover, title, progress_episodes, episodes, premiered, aired_from, aired_to, priority FROM users_lists, users, animes, priorities WHERE priority_id = priorities.id AND animes.id = anime_id AND users.id = user_id AND username = :username AND list_id = :list_id ORDER BY title');
+        $req->bindValue(':username', $username);
+        $req->bindValue(':list_id', $listId, PDO::PARAM_INT);
 
-        return $req->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_GROUP);
+        $req->execute();
+
+        return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getAllLists()

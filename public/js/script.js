@@ -81,7 +81,7 @@ function getResultItem(anime) {
     resultInfos.appendChild(aired);
 
     let score = document.createElement('div');
-    score.innerHTML = 'Score: ' + ((anime.score == null)? 'N/A' : anime.score);
+    score.innerHTML = 'Score: ' + ((anime.score == null)? 'N/A' : Number.parseFloat(anime.score).toFixed(2));
 
     resultInfos.appendChild(score);
 
@@ -110,8 +110,6 @@ async function getSearchResult(title)
         success: (data) => {
             let results = JSON.parse(data);
             $('#search-result').html('');
-
-            console.log(results);
 
             if(!results || results.length == 0)
             {

@@ -15,7 +15,7 @@ ob_start();
         <div id="cover"><img src="public/images/profile_images/<?= $profile['image'] ?>" alt="profile-image"></div>
         <div id="joined"><span>Joined</span> <div><?= formatDate('M d, Y', $profile['signup_date']); ?></div></div>
         <div>
-            <a href="#" class="btn">Anime List</a>
+            <a href="index.php?a=animelist&username=<?= $username ?>" class="btn">Anime List</a>
         </div>
     </div>
 
