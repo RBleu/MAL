@@ -83,4 +83,44 @@ class UserManager extends Manager
 
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function exists($username)
+    {
+        $req = $this->db->prepare('SELECT * FROM users WHERE username = ?');
+        $req->execute(array($username));
+
+        return (bool) $req->fetch();
+    }
+
+    public function emailExists($email)
+    {
+        $req = $this->db->prepare('SELECT * FROM users WHERE email = ?');
+        $req->execute(array($email));
+
+        return (bool) $req->fetch();
+    }
+
+    public function createUser($email, $username, $hash)
+    {
+        $this->db->beginTransaction();
+
+        try
+        {
+            $req = $this->db->prepare('INSERT INTO users(username, password, email, image, role, signup_date) VALUES(:username, :password, :email, "30327.jpg", "User", NOW())');
+            $req->bindValue(':username', $username);
+            $req->bindValue(':password', $hash);
+            $req->bindValue(':email', $email);
+
+            $req->execute();
+
+            $this->db->commit();
+        }
+        catch(Exception $e)
+        {
+            $this->db->rollBack();
+            return $e->getMessage();
+        }
+
+        return true;
+    }
 }

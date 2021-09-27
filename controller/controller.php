@@ -109,6 +109,13 @@ function loginUser($username, $password)
 {
     global $isConnected;
 
+    if(!preg_match('/^[\w]{4,20}$/', $username) || !preg_match('/^.{8,50}$/', $password))
+    {
+        $errorMessage = 'Username and/or password not valid';
+        require('view/loginView.php');
+        return;
+    }
+
     $userManager = new UserManager();
 
     $hash = $userManager->getPasswordHash($username);
@@ -228,4 +235,67 @@ function displayAnimeList($username, $listId = 2)
     $lists     = $userManager->getAllLists();
 
     require('view/animelistView.php');
+}
+
+function signUpUser($email, $username, $password, $confirmPassword)
+{
+    $userManager = new UserManager();
+
+    if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+    {
+        $errorMessage = 'Email not valid';
+        require('view/signupView.php');
+        return;
+    }
+
+    if($userManager->emailExists($email))
+    {
+        $errorMessage = 'Email already used';
+        require('view/signupView.php');
+        return;
+    }
+
+    if(!preg_match('/^[\w]{4,20}$/', $username))
+    {
+        $errorMessage = 'Username not valid';
+        require('view/signupView.php');
+        return;
+    }
+
+    if($userManager->exists($username))
+    {
+        $errorMessage = 'Username already used';
+        require('view/signupView.php');
+        return;
+    }
+
+    if($password != $confirmPassword)
+    {
+        $errorMessage = 'Passwords not equals';
+        require('view/signupView.php');
+        return;
+    }
+
+    if(!preg_match('/^.{8,50}$/', $password))
+    {
+        $errorMessage = 'Password not valid';
+        require('view/signupView.php');
+        return;
+    }
+
+    $hash = password_hash($password, PASSWORD_DEFAULT);
+    $res = $userManager->createUser($email, $username, $hash);
+
+    if($res === true)
+    {
+        setcookie('username', $username, time() + 7*24*3600, null, null, false, true);
+        setcookie('password', $hash, time() + 7*24*3600, null, null, false, true);
+
+        header('Location: ./');
+        return;
+    }
+    else
+    {
+        throw new Exception($res);
+    }
 }

@@ -88,7 +88,7 @@
                     {
                         ?>
                             <a href="index.php?a=login" id="login-btn" class="btn">Login</a>
-                            <a href="#" id="signup-btn" class="btn">Sign Up</a>
+                            <a href="index.php?a=signup" id="signup-btn" class="btn">Sign Up</a>
                         <?php
                     }
                 ?>

@@ -17,7 +17,7 @@ try
                     return;
                 }
 
-                if(isset($_POST['username']) && $_POST['username'] != '' && isset($_POST['password']) && $_POST['password'] != '')
+                if(isset($_POST['username']) && isset($_POST['password']))
                 {
                     loginUser($_POST['username'], $_POST['password']);
                 }
@@ -36,9 +36,15 @@ try
                 header('Location: ./');
                 break;
             case 'signup':
-                if(false)
+                if($isConnected)
                 {
+                    header('Location: ./');
+                    return;
+                }
 
+                if(isset($_POST['email']) && isset($_POST['username']) && isset($_POST['password']) && isset($_POST['confirm-password']))
+                {
+                    signUpUser($_POST['email'], $_POST['username'], $_POST['password'], $_POST['confirm-password']);
                 }
                 else
                 {

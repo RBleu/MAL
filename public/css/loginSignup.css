@@ -39,6 +39,11 @@
     margin: 5px 0;
 }
 
+.field:invalid
+{
+    border-color: var(--red);
+}
+
 .password-header 
 {
     display: flex;
