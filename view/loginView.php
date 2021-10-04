@@ -3,7 +3,7 @@
 $pageTitle = 'Login - MAL';
 $headerTitle = 'Login';
 $styles = ['loginSignup'];
-$scripts = ['login'];
+$scripts = ['loginSignup'];
 
 ob_start();
 
@@ -23,7 +23,7 @@ if(isset($errorMessage))
         <div class="password-header">
             <label for="password">Password</label>
             <div>
-                <input id="checkbox" type="checkbox" name="show-pass">
+                <input class="show-pass" type="checkbox" name="show-pass">
                 <label for="show-pass">Show Password</label>
             </div>
         </div>

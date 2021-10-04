@@ -29,14 +29,16 @@ ob_start();
                         $statsGraphDivs = '';
                         $statsGraphDetail = '';
 
-                        foreach($stats as $key => $value)
+                        foreach($lists as $value)
                         {
-                            $className = str_replace(' ', '-', strtolower($key));
+                            $list = $value['list'];
+                            $listEntries = $stats[$list];
+                            $className = $value['list_key'];
 
-                            $statsGraphDivWidth = ($totalAnimes == 0)? 0 : round(($value/$totalAnimes) * $statsGraphWidth);
+                            $statsGraphDivWidth = ($totalAnimes == 0)? 0 : round(($listEntries/$totalAnimes) * $statsGraphWidth);
 
                             $statsGraphDivs .= '<div class=\''.$className.'\' style=\'width: '.$statsGraphDivWidth.'px\'></div>';
-                            $statsGraphDetail .= '<div><div class=\'circle '.$className.'\'></div><a href=\'#\' class=\'link\'>'.$key.'</a><div class=\'value\'>'.$value.'</div></div>';
+                            $statsGraphDetail .= '<div><div class=\'circle '.$className.'\'></div><a href=\'#\' class=\'link\'>'.$list.'</a><div class=\'value\'>'.$listEntries.'</div></div>';
                         }
                     ?>
                     <div class="title">Anime Stats</div>

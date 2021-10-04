@@ -6,15 +6,22 @@ class AnimeManager extends Manager
 {
     public function getAnimeById($id)
     {
-        $req = $this->db->prepare('SELECT * FROM animes, types WHERE types.id = type_id AND animes.id = ?');
+        $req = $this->db->prepare('SELECT * FROM animes WHERE animes.id = ?');
         $req->execute(array($id));
 
         $anime = $req->fetch(PDO::FETCH_ASSOC);
+
+        $req->closeCursor();
 
         if(!$anime)
         {
             throw new Exception('Wrong ID: this anime doesn\'t exist or can\'t be found');
         }
+
+        $req = $this->db->prepare('SELECT type FROM types WHERE id = ?');
+        $req->execute(array($anime['type_id']));
+
+        $anime['type'] = $req->fetch(PDO::FETCH_ASSOC)['type'];
 
         return $anime;
     }

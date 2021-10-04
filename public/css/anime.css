@@ -79,7 +79,8 @@
     padding: 0 15px;  
 }
 
-#add
+#add,
+#delete
 {
     display: flex;
     align-items: center;
@@ -98,6 +99,11 @@
     width: 14px;
     filter: var(--filter-white);
     margin-right: 5px;
+}
+
+#delete
+{
+    background-color: var(--dropped);
 }
 
 #add-to-list .select
@@ -122,6 +128,7 @@
     border: 1px solid var(--gray);
     border-radius: 3px;
     padding: 0 10px;
+    margin-right: 5px;
 }
 
 #number-of-episodes
@@ -179,4 +186,34 @@
 #themes .info:first-child
 {
     margin-right: 15px;
+}
+
+.watching
+{
+    color: var(--watching) !important;
+    border-color: var(--watching) !important;
+}
+
+.completed
+{
+    color: var(--blue) !important;
+    border-color: var(--blue) !important;
+}
+
+.on-hold
+{
+    color: var(--on-hold) !important;
+    border-color: var(--on-hold) !important;
+}
+
+.dropped
+{
+    color: var(--dropped) !important;
+    border-color: var(--dropped) !important;
+}
+
+.plan-to-watch
+{
+    color: var(--plan-to-watch) !important;
+    border-color: var(--plan-to-watch) !important;
 }

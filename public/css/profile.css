@@ -129,7 +129,7 @@
 
 .watching
 {
-    background-color: #2db039;
+    background-color: var(--watching);
 }
 
 .completed
@@ -139,17 +139,17 @@
 
 .on-hold
 {
-    background-color: #f9d457;
+    background-color: var(--on-hold);
 }
 
 .dropped
 {
-    background-color: #a12f31;
+    background-color: var(--dropped);
 }
 
 .plan-to-watch
 {
-    background-color: #c3c3c3;
+    background-color: var(--plan-to-watch);
 }
 
 #last-anime-updates .info-content

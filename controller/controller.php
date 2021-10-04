@@ -70,7 +70,8 @@ function displayIndex()
 
     $animeManager = new AnimeManager();
 
-    $currentSeason       = getCurrentSeason();
+    //$currentSeason       = getCurrentSeason();
+    $currentSeason       = 'Summer 2021';
     $currentSeasonAnimes = $animeManager->getAnimesBySeason($currentSeason);
 
     $topAnimes = [];
@@ -91,6 +92,8 @@ function displayAnime($id)
 {
     global $isConnected;
 
+    // Anime
+
     $animeManager = new AnimeManager();
 
     $anime     = $animeManager->getAnimeById($id);
@@ -101,6 +104,29 @@ function displayAnime($id)
     $sequels   = $relations['sequels'];
 
     $themes    = $animeManager->getAnimeThemes($id);
+
+    // User
+
+    $userManager = new UserManager();
+    
+    $lists = $userManager->getAllLists();
+    $isAlreadyAdd = false;
+    $selectedKey = 'plan-to-watch';
+    $progressEpisodes = 0;
+    $score = 0;
+
+    if($isConnected)
+    {
+        $userList = $userManager->getListOf($_COOKIE['username'], $id);
+
+        if($userList)
+        {
+            $selectedKey = $userList['list_key'];
+            $progressEpisodes = $userList['progress_episodes'];
+            $score = ($userList['score'] == null)? 0 : $userList['score'];
+            $isAlreadyAdd = true;
+        }
+    }
 
     require('view/animeView.php');
 }
@@ -130,7 +156,10 @@ function loginUser($username, $password)
     setcookie('username', $username, time() + 7*24*3600, null, null, false, true);
     setcookie('password', $hash['password'], time() + 7*24*3600, null, null, false, true);
 
-    header('Location: ./');
+    $previous = $_SESSION['previous'];
+    session_unset();
+
+    header('Location: '.$previous);
 }
 
 function searchAnimesByTitleJs($title)
@@ -223,6 +252,7 @@ function displayProfile($username)
     $totalAnimes = array_sum($stats);
     $history = $userManager->getProfileHistory($username);
     $totalEpisodes = $userManager->getProfileTotalEpisodes($username);
+    $lists = $userManager->getAllLists();
 
     require('view/profileView.php');
 }
@@ -295,6 +325,30 @@ function signUpUser($email, $username, $password, $confirmPassword)
         return;
     }
     else
+    {
+        throw new Exception($res);
+    }
+}
+
+function updateUserAnimeList($username, $animeId, $listId, $score, $progressEpisodes, $type)
+{
+    $userManager = new UserManager();
+
+    $res = $userManager->updateUserAnimeList($username, $animeId, $listId, $score, $progressEpisodes, $type);
+
+    if($res !== true)
+    {
+        throw new Exception($res);
+    }
+}
+
+function deleteAnimeFromUserList($username, $animeId)
+{
+    $userManager = new UserManager();
+
+    $res = $userManager->deleteAnimeFromUserList($username, $animeId);
+
+    if($res !== true)
     {
         throw new Exception($res);
     }

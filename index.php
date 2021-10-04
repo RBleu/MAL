@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 require('controller/controller.php');
 
 checkCookies();
@@ -23,6 +25,7 @@ try
                 }
                 else
                 {
+                    $_SESSION['previous'] = $_SERVER['HTTP_REFERER'];
                     require('view/loginView.php');
                 }
                 break;
@@ -114,6 +117,18 @@ try
                 else
                 {
                     throw new Exception('Username not specified');
+                }
+                break;
+            case 'update':
+                if(isset($_POST['username']) && isset($_POST['animeId']) && isset($_POST['listId']) && isset($_POST['score']) && isset($_POST['progressEpisodes']) && isset($_POST['type']))
+                {
+                    updateUserAnimeList($_POST['username'], $_POST['animeId'], $_POST['listId'], $_POST['score'], $_POST['progressEpisodes'], $_POST['type']);
+                }
+                break;
+            case 'delete':
+                if(isset($_POST['username']) && isset($_POST['animeId']))
+                {
+                    deleteAnimeFromUserList($_POST['username'], $_POST['animeId']);
                 }
                 break;
             default:

@@ -13,6 +13,11 @@
     --filter-blue: invert(27%) sepia(15%) saturate(5926%) hue-rotate(202deg) brightness(94%) contrast(88%);
     --filter-light-blue: invert(72%) sepia(6%) saturate(3956%) hue-rotate(191deg) brightness(93%) contrast(86%);
     --filter-white: invert(100%) sepia(3%) saturate(457%) hue-rotate(108deg) brightness(115%) contrast(100%);
+
+    --watching: #2db039;
+    --on-hold: #f9d457;
+    --dropped: #a12f31;
+    --plan-to-watch: #c3c3c3;
 }
 
 *

@@ -123,4 +123,86 @@ class UserManager extends Manager
 
         return true;
     }
+
+    public function getListOf($username, $animeId)
+    {
+        $req = $this->db->prepare('SELECT list_key, progress_episodes, users_lists.score FROM users, users_lists, lists WHERE username = :username AND users.id = user_id AND lists.id = list_id AND anime_id = :anime_id');
+        $req->bindValue(':username', $username);
+        $req->bindValue(':anime_id', $animeId);
+
+        $req->execute();
+
+        return $req->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function updateUserAnimeList($username, $animeId, $listId, $score, $progressEpisodes, $type)
+    {
+        $req = $this->db->prepare('SELECT id FROM users WHERE username = ?');
+        $req->execute(array($username));
+
+        $id = $req->fetch(PDO::FETCH_ASSOC)['id'];
+
+        $req->closeCursor();
+
+        $this->db->beginTransaction();
+
+        try
+        {
+            if($type == 'insert')
+            {
+                $req = $this->db->prepare('INSERT INTO users_lists(user_id, anime_id, list_id, score, modification_date, priority_id, progress_episodes) VALUES (:user_id, :anime_id, :list_id, :score, NOW(), 2, :progress_episodes)');
+            }
+            else
+            {
+                $req = $this->db->prepare('UPDATE users_lists SET list_id = :list_id, score = :score, modification_date = NOW(), progress_episodes = :progress_episodes WHERE user_id = :user_id AND anime_id = :anime_id');
+            }
+
+            $req->bindValue(':user_id', $id, PDO::PARAM_INT);
+            $req->bindValue(':anime_id', $animeId, PDO::PARAM_INT);
+            $req->bindValue(':list_id', $listId, PDO::PARAM_INT);
+            $req->bindValue(':score', $score, PDO::PARAM_INT);
+            $req->bindValue(':progress_episodes', $progressEpisodes, PDO::PARAM_INT);
+
+            $req->execute();
+
+            $this->db->commit();
+        }
+        catch(Exception $e)
+        {
+            $this->db->rollBack();
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    public function deleteAnimeFromUserList($username, $animeId)
+    {
+        $req = $this->db->prepare('SELECT id FROM users WHERE username = ?');
+        $req->execute(array($username));
+
+        $id = $req->fetch(PDO::FETCH_ASSOC)['id'];
+
+        $req->closeCursor();
+
+        $this->db->beginTransaction();
+
+        try
+        {
+            $req = $this->db->prepare('DELETE FROM users_lists WHERE user_id = :user_id AND anime_id = :anime_id');
+            $req->bindValue(':user_id', $id, PDO::PARAM_INT);
+            $req->bindValue(':anime_id', $animeId, PDO::PARAM_INT);
+
+            $req->execute();
+
+            $this->db->commit();
+        }
+        catch(Exception $e)
+        {
+            $this->db->rollBack();
+            return $e->getMessage();
+        }
+
+        return true;
+    }
 }

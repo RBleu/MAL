@@ -5,6 +5,7 @@ $headerTitle = $anime['title'];
 $headerLinkIcon = 'pencil';
 $hederLinkText = 'Edit';
 $styles = ['anime'];
+$scripts = ['anime'];
 
 ob_start();
 
@@ -63,44 +64,70 @@ ob_start();
             </div>
         </div>
         <div id="add-to-list">
+            <input id="anime-id" type="hidden" name="anime_id" value="<?= $anime['id'] ?>">
+            <input id="selected-list" type="hidden" name="selected_list" value="<?= $selectedKey ?>">
+            <select name="list-select" id="list-select" class="select <?= $selectedKey ?>" <?= ($isAlreadyAdd)? '' : 'style="display: none;"' ?>>
             <?php
-                if(false)
+                foreach($lists as $list)
                 {
-                    ?>
-                        <select name="list-select" id="list-select" class="select">
-                            <option value="1">Watching</option>
-                            <option value="2">Completed</option>
-                            <option value="3">On-Hold</option>
-                            <option value="4">Dropped</option>
-                            <option value="5" selected="selected">Plan to Watch</option>
-                        </select>
-                    <?php
-                }
-                else
-                {
-                    ?>
-                        <a href="#" id="add"><img src="public/images/icons/plus-square.svg" alt="plus-icon">Add to List</a>
-                    <?php
+                    if($list['list_key'] == $selectedKey)
+                    {
+                        ?>
+                            <option value="<?= $list['id'] ?>" selected="selected" key="<?= $list['list_key'] ?>"><?= $list['list'] ?></option>
+                        <?php
+                    }
+                    else
+                    {
+                        ?>
+                            <option value="<?= $list['id'] ?>" key="<?= $list['list_key'] ?>"><?= $list['list'] ?></option>
+                        <?php
+                    }
+                    
                 }
             ?>
-            <select name="user-score" id="user-score" class="select" <?= (false) ? '' : 'disabled=\'disabled\'' ?>>
-                <option value="0" selected="selected">Select</option>
-                <option value="10">(10) Masterpiece</option>
-                <option value="9">(9) Great</option>
-                <option value="8">(8) Very Good</option>
-                <option value="7">(7) Good</option>
-                <option value="6">(6) Fine</option>
-                <option value="5">(5) Average</option>
-                <option value="4">(5) Bad</option>
-                <option value="3">(3) Very Bad</option>
-                <option value="2">(2) Horrible</option>
-                <option value="1">(1) Appalling</option>
             </select>
-            <div id="watch-episodes" <?= (false) ? '' : 'class=\'disabled\'' ?>>
+            <a href="#" id="add" <?= ($isAlreadyAdd)? 'style="display: none;"' : '' ?>><img src="public/images/icons/plus-square.svg" alt="plus-icon">Add to List</a>
+            <select name="user-score" id="user-score" class="select" <?= ($isAlreadyAdd) ? '' : 'disabled=\'disabled\'' ?>>
+                <?php
+                    $scores = [
+                        'Select',
+                        '(1) Appalling',
+                        '(2) Horrible',
+                        '(3) Very Bad',
+                        '(4) Bad',
+                        '(5) Average',
+                        '(6) Fine',
+                        '(7) Good',
+                        '(8) Very Good',
+                        '(9) Great',
+                        '(10) Masterpiece'
+                    ];
+
+                    for($i = 0; $i < 11; $i++)
+                    {
+                        $j = ($i == 0)? 0 : (11 - $i);
+
+                        if($j == $score)
+                        {
+                            ?>
+                                <option value="<?= $j ?>" selected="selected"><?= $scores[$j] ?></option>
+                            <?php
+                        }
+                        else
+                        {
+                            ?>
+                                <option value="<?= $j ?>"><?= $scores[$j] ?></option>
+                            <?php
+                        }
+                    }
+                ?>
+            </select>
+            <div id="watch-episodes" <?= ($isAlreadyAdd) ? '' : 'class=\'disabled\'' ?>>
                 Episodes:
-                <input type="text" id="number-of-episodes" value="0" <?= (false) ? '' : 'disabled=\'disabled\'' ?>>/<span id="total-episodes"><?= ($anime['episodes'] == null)? '?' : $anime['episodes'] ?></span>
+                <input type="text" id="number-of-episodes" value="<?= $progressEpisodes ?>" <?= ($isAlreadyAdd) ? '' : 'disabled=\'disabled\'' ?>>/<span id="total-episodes"><?= ($anime['episodes'] == null)? '?' : $anime['episodes'] ?></span>
                 <a href="#"><img src="public/images/icons/plus.svg" alt="plus-icon"></a>
             </div>
+            <a href="#" id="delete" <?= ($isAlreadyAdd)? '' : 'style="display: none;"' ?>>Delete From List</a>
         </div>
         <div class="info">
             <div class="title">Synopsis<a href="#" class="link">Edit</a></div>
