@@ -90,7 +90,6 @@
 #profile-menu
 {
     position: relative;
-    z-index: 1;
 }
 
 #profile-img img
@@ -107,6 +106,7 @@
     right: -30px;
     border: 2px solid var(--blue);
     width: max-content;
+    z-index: 1;
 }
 
 .header-sub-menu-item a

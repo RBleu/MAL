@@ -51,9 +51,9 @@
                     {
                         ?>
                             <div class="header-icon">
-                                <a href="#" class="header-img"><img src="public/images/icons/list.svg" alt="list-icon"></a>
+                                <a href="#" class="header-img has-sub-menu"><img src="public/images/icons/list.svg" alt="list-icon"></a>
                                 <div class="header-sub-menu">
-                                    <div class="header-sub-menu-item"><a href="#">Anime List</a></div>
+                                    <div class="header-sub-menu-item"><a href="index.php?a=animelist&username=<?= $_COOKIE['username'] ?>">Anime List</a></div>
                                     <div class="header-sub-menu-item"><a href="#">Manga List</a></div>
                                     <div class="header-sub-menu-item"><a href="#">Quick Add</a></div>
                                     <div class="header-sub-menu-item"><a href="#">List Settings</a></div>
@@ -67,7 +67,7 @@
                             </div>
                             <div id="profile">
                                 <div id="profile-menu">
-                                    <a href="#" id="username"><?= $_COOKIE['username'] ?></a>
+                                    <a href="#" id="username" class="has-sub-menu"><?= $_COOKIE['username'] ?></a>
                                     <div class="header-sub-menu">
                                         <div class="header-sub-menu-item"><a href="index.php?a=profile&username=<?= $_COOKIE['username'] ?>">Profile</a></div>
                                         <div class="header-sub-menu-item"><a href="#">Friends</a></div>

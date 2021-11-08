@@ -1,21 +1,26 @@
 $(function() {
     $('body').on('click', (e) => {
-        if(!$(e.target).is('#username'))
+        let target = ($(e.target).is('img'))? $(e.target).parent() : $(e.target);
+
+        if(!target.is('.has-sub-menu'))
         {
-            $('#username + .header-sub-menu').hide();
+            $('.has-sub-menu + .header-sub-menu').hide();
         }
     });
 
-    $('#username').on('click', (e) => {
+    $('.has-sub-menu').on('click', (e) => {
         e.preventDefault();
+
+        let subMenu = $(e.currentTarget).next();
         
-        if($('#username + .header-sub-menu').css('display') == 'none')
+        if($(subMenu).css('display') == 'none')
         {
-            $('#username + .header-sub-menu').show();
+            $('.has-sub-menu + .header-sub-menu').hide();
+            $(subMenu).show();
         }
         else
         {
-            $('#username + .header-sub-menu').hide();
+            $(subMenu).hide();
         }
     });
 
