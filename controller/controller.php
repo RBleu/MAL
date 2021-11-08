@@ -123,7 +123,7 @@ function displayAnime($id)
         {
             $selectedKey = $userList['list_key'];
             $progressEpisodes = $userList['progress_episodes'];
-            $score = ($userList['score'] == null)? 0 : $userList['score'];
+            $score = $userList['score'];
             $isAlreadyAdd = true;
         }
     }

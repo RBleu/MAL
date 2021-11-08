@@ -90,7 +90,6 @@ ob_start();
             <select name="user-score" id="user-score" class="select" <?= ($isAlreadyAdd) ? '' : 'disabled=\'disabled\'' ?>>
                 <?php
                     $scores = [
-                        'Select',
                         '(1) Appalling',
                         '(2) Horrible',
                         '(3) Very Bad',
@@ -100,25 +99,15 @@ ob_start();
                         '(7) Good',
                         '(8) Very Good',
                         '(9) Great',
-                        '(10) Masterpiece'
+                        '(10) Masterpiece',
+                        'Select'
                     ];
 
-                    for($i = 0; $i < 11; $i++)
+                    for($i = 10; $i >= 0; $i--)
                     {
-                        $j = ($i == 0)? 0 : (11 - $i);
-
-                        if($j == $score)
-                        {
-                            ?>
-                                <option value="<?= $j ?>" selected="selected"><?= $scores[$j] ?></option>
-                            <?php
-                        }
-                        else
-                        {
-                            ?>
-                                <option value="<?= $j ?>"><?= $scores[$j] ?></option>
-                            <?php
-                        }
+                        ?>
+                            <option value="<?= $i + 1 ?>" <?php ($score == $i)? 'selected="selected"' : '' ?>><?= $scores[$i] ?></option>
+                        <?php
                     }
                 ?>
             </select>

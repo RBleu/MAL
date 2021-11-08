@@ -1,7 +1,7 @@
 <?php
 
 define('HOST', 'localhost');
-define('DBNAME', 'mal_test');
+define('DBNAME', 'mal');
 define('USERNAME', 'root');
 define('PASSWORD', '');
 

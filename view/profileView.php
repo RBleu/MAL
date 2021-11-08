@@ -69,7 +69,7 @@ ob_start();
                                         <div class="updated-anime-infos">
                                             <div class="updated-anime-title"><a href="index.php?a=anime&id=<?= $ah['id'] ?>" class="link"><?= $ah['title'] ?></a></div>
                                             <div class="updated-anime-progress"><div style="width: <?= $animeProgressWidth ?>px"></div></div>
-                                            <div class="updated-anime-score"><?= $ah['list'] ?> · <?= 'Scored '.(($ah['score'] == null)? '-' : $ah['score']) ?></div>
+                                            <div class="updated-anime-score"><?= $ah['list'] ?> · <?= 'Scored '.(($ah['score'] == 11)? '-' : $ah['score']) ?></div>
                                         </div>
                                         <div class="modification-date"><?= formatDate('M d, Y h:i A', $ah['modification_date']) ?></div>
                                     </div>
